@@ -13,6 +13,7 @@ import java.util.stream.Stream;
  */
 public enum TipoInmuebleEnum {
   CASA, APTO, LOTE; 
+  
   public static String[] names() {
     return Stream.of(TipoInmuebleEnum.values()).map(TipoInmuebleEnum::name).toArray(String[]::new);
   }

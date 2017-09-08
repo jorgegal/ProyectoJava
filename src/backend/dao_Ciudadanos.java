@@ -22,11 +22,13 @@ import logica.Ciudadano;
 public class dao_Ciudadanos extends dao_Conexion{
    
   private static ArrayList<Ciudadano> aCiudadanos = new ArrayList<>();
+  private static boolean cargados = false;
+  
   /**
    *
    * @return Boolean
    */
-  public static boolean CargarCiudadanos() {
+  public static void CargarCiudadanos() {
     boolean flag = true;
     ResultSet rs = null;
     Statement st = null;
@@ -57,8 +59,12 @@ public class dao_Ciudadanos extends dao_Conexion{
         Logger.getLogger(dao_Ciudadanos.class.getName()).log(Level.SEVERE, null, ex);
       }
     }  
-    return flag;
+    cargados = flag;
   }  
+  
+  public static boolean CiudadanosCargados() {
+    return cargados;
+  }
   
   public static ArrayList<Ciudadano> ListarCiudadanosPorId() {
     Collections.sort(aCiudadanos, (Ciudadano c1, Ciudadano c2) -> (c1.getId().compareTo(c2.getId())));
@@ -98,6 +104,7 @@ public class dao_Ciudadanos extends dao_Conexion{
   
   public static boolean ValidarCiudadano(String id) {
     boolean flag = true;
+    /*
     ResultSet rs = null;
     PreparedStatement st = null;
     try {
@@ -126,6 +133,7 @@ public class dao_Ciudadanos extends dao_Conexion{
         Logger.getLogger(dao_Ciudadanos.class.getName()).log(Level.SEVERE, null, ex);
       }
     }  
+    */
     return flag;
   }  
   

@@ -32,22 +32,73 @@ public class Gobierno {
         break;
         case 4:
           //
+        case 5:
+          listarDatos();
         break;
       }
       menu();
       Scanner scan = new Scanner(System.in);
       Opcion = scan.nextInt();
-    } while (Opcion != 5);
+    } while (Opcion != 9);
   }
   
   /**
    *
    */
   public static void leerinfo(){
-    if (dao_Ciudadanos.CargarCiudadanos()){
+    dao_Ciudadanos.CargarCiudadanos();
+    dao_Inmuebles.CargarInmuebles();
+  }
+  
+  public static void listarDatos(){
+    if (dao_Ciudadanos.CiudadanosCargados()){
+      System.out.println("----------------------------------------------------------------------");
+      System.out.println("- CIUDADANOS ORDENADOS POR ID                                        -" );
+      System.out.println("----------------------------------------------------------------------");
       dao_Ciudadanos.ListarCiudadanosPorId().forEach((c) -> {System.out.println(c.toString()); });
       System.out.println();
+      System.out.println("----------------------------------------------------------------------");
+      System.out.println("- CIUDADANOS ORDENADOS POR NOMBRE                                    -" );
+      System.out.println("----------------------------------------------------------------------");
       dao_Ciudadanos.ListarCiudadanosPorNombre().forEach((c) -> {System.out.println(c.toString()); });
+    } else {
+      System.out.println("**********************************************************************");
+      System.out.println("* NO SE HAN CARGADO LOS CIUDADANOS                                    *" );
+      System.out.println("**********************************************************************");
+    }
+    
+    if (dao_Inmuebles.InmueblesCargados()){
+      System.out.println("----------------------------------------------------------------------");
+      System.out.println("- CASAS ORDENADAS POR CODIGO                                         -" );
+      System.out.println("----------------------------------------------------------------------");
+      dao_Inmuebles.ListarCasasPorCodigo().forEach((c) -> {System.out.println(c.toString()); });
+      System.out.println();
+      System.out.println("----------------------------------------------------------------------");
+      System.out.println("- CASAS ORDENADAS POR DIRECCION                                      -" );
+      System.out.println("----------------------------------------------------------------------");
+      dao_Inmuebles.ListarCasasPorDireccion().forEach((c) -> {System.out.println(c.toString()); });
+      System.out.println("----------------------------------------------------------------------");
+      System.out.println("- APARTAMENTOS ORDENADOS POR CODIGO                                  -" );
+      System.out.println("----------------------------------------------------------------------");
+      dao_Inmuebles.ListarApartamentosPorCodigo().forEach((c) -> {System.out.println(c.toString()); });
+      System.out.println();
+      System.out.println("----------------------------------------------------------------------");
+      System.out.println("- APARTAMENTOS ORDENADOS POR DIRECCION                               -" );
+      System.out.println("----------------------------------------------------------------------");
+      dao_Inmuebles.ListarApartamentosPorDireccion().forEach((c) -> {System.out.println(c.toString()); });
+      System.out.println("----------------------------------------------------------------------");
+      System.out.println("- LOTES ORDENADOS POR CODIGO                                         -" );
+      System.out.println("----------------------------------------------------------------------");
+      dao_Inmuebles.ListarLotesPorCodigo().forEach((c) -> {System.out.println(c.toString()); });
+      System.out.println();
+      System.out.println("----------------------------------------------------------------------");
+      System.out.println("- LOTES ORDENADOS POR DIRECCION                                      -" );
+      System.out.println("----------------------------------------------------------------------");
+      dao_Inmuebles.ListarLotesPorDireccion().forEach((c) -> {System.out.println(c.toString()); });
+    } else {
+      System.out.println("**********************************************************************");
+      System.out.println("* NO SE HAN CARGADO LOS INMUEBLES                                    *" );
+      System.out.println("**********************************************************************");
     }
   }
   
@@ -81,14 +132,21 @@ public class Gobierno {
   }
   
   public static void crearInmueble(){
+    String pId_ciudadano;
+    String pCcodigoNacional;
+    String pDireccion;
+    int intTipo;
+    String pTipo;
+    Double pArea;
+    int pEstrato;        
     Scanner scan = new Scanner(System.in);
     System.out.println("-- Creación de Inmuebles --");
     // Desplegar la lista de Ciudadanos, esto normalmente no se hace por consola
     // pero debido a la naturaleza del ejercicio, se implementa para repasar 
     // lampdas y api stream ;)
-    dao_Ciudadanos.ListarCiudadanosPorId().forEach((c) -> {System.out.println(c.toString()); });
-    System.out.print  ("Ingrese el Id del Ciudadano: ");
-    String pId_ciudadano = scan.nextLine();
+    dao_Ciudadanos.ListarCiudadanosPorId().forEach((c) -> {System.out.println(c.getId() + " - " + c.getNombres() + " " + c.getApellidos()); });
+    System.out.print("Ingrese el Id del Ciudadano: ");
+    pId_ciudadano = scan.nextLine();
     if (pId_ciudadano.length() > 0) {
       // Validar si el id ingresado el valido en la BD
       if (dao_Ciudadanos.ValidarCiudadano(pId_ciudadano)) {
@@ -103,10 +161,10 @@ public class Gobierno {
         * @param pEstrato
         */
         System.out.print("Ingrese el Codigo Nacional: ");
-        String pCcodigoNacional = scan.nextLine();
+        pCcodigoNacional = scan.nextLine();
         if (pCcodigoNacional.length() > 0) {
           System.out.print("Ingrese la direccion: ");
-          String pDireccion = scan.nextLine();
+          pDireccion = scan.nextLine();
           if (pDireccion.length() > 0) {
             int conteo = 1;
             for(TipoInmuebleEnum te: TipoInmuebleEnum.values()){
@@ -114,41 +172,40 @@ public class Gobierno {
                 conteo++;
             }
             System.out.print("Ingrese el tipo: ");
-            int intTipo = scan.nextInt();
-            String pTipo = "";
+            intTipo = scan.nextInt();
+            pTipo = "";
             if (0< intTipo && intTipo < conteo){
               String[] alista = TipoInmuebleEnum.names();
-              pTipo = alista[intTipo];
+              pTipo = alista[intTipo - 1];
             }
             if (pTipo.length() > 0) {
               System.out.print("Ingrese el area: ");
-              Double pArea = scan.nextDouble();
+              pArea = scan.nextDouble();
               if (pArea > 0) {
                 System.out.print("Ingrese el valor comercial: ");
                 BigDecimal pValorComercial = scan.nextBigDecimal();
                 BigDecimal foo = BigDecimal.valueOf(0);
                 if (pValorComercial.compareTo(foo) > 0) {
                   System.out.print("Ingrese el estrato: ");
-                  int pEstrato = scan.nextInt();
+                  pEstrato = scan.nextInt();
                   if (pEstrato > 0) {
                     Ciudadano c = new Ciudadano(pId_ciudadano, "", "");
-                    if (pTipo.equals(TipoInmuebleEnum.APTO)) {
+                    // Segun el tipo se ejecuta el dao correspondiente para grabar
+                    if (pTipo == TipoInmuebleEnum.APTO.name()) {
                       Apartamento i = new Apartamento(pCcodigoNacional, pDireccion, pId_ciudadano, pTipo, pArea, pValorComercial, pEstrato);
                       if (dao_Inmuebles.GuardarApartamento(c, i)){
                         System.out.println("El inmueble " + pTipo + " fue almacenado en la base de datos!");
                       } else {
                         System.out.println("El inmueble " + pTipo + " no fue almacenado en la base de datos!");
                       }
-                    }
-                    if (pTipo.equals(TipoInmuebleEnum.CASA)) {
+                    } else if (pTipo == TipoInmuebleEnum.APTO.name()) {
                       Casa i = new Casa(pCcodigoNacional, pDireccion, pId_ciudadano, pTipo, pArea, pValorComercial, pEstrato);
                       if (dao_Inmuebles.GuardarCasa(c, i)){
                         System.out.println("El inmueble " + pTipo + " fue almacenado en la base de datos!");
                       } else {
                         System.out.println("El inmueble " + pTipo + " no fue almacenado en la base de datos!");
                       }
-                    }
-                    if (pTipo.equals(TipoInmuebleEnum.LOTE)) {
+                    } else if (pTipo == TipoInmuebleEnum.LOTE.name()) {
                       Lote i = new Lote(pCcodigoNacional, pDireccion, pId_ciudadano, pTipo, pArea, pValorComercial, pEstrato);
                       if (dao_Inmuebles.GuardarLote(c, i)){
                         System.out.println("El inmueble " + pTipo + " fue almacenado en la base de datos!");
@@ -192,7 +249,8 @@ public class Gobierno {
     System.out.println("- 2. Crear Ciudadano       -");
     System.out.println("- 3. Crear Inmueble        -");
     System.out.println("- 4. Reporte de Inmuebles  -");
-    System.out.println("- 5. Salir                 -");
+    System.out.println("- 5. Listar datos          -");
+    System.out.println("- 9. Salir                 -");
     System.out.println("----------------------------");
     System.out.print  ("Selecciones una opción: ");
   }

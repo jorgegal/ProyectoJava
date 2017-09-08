@@ -30,8 +30,9 @@ public class dao_Inmuebles extends dao_Conexion{
   private static ArrayList<Casa> aCasas = new ArrayList<>();
   private static ArrayList<Apartamento> aApartamentos = new ArrayList<>();
   private static ArrayList<Lote> aLotes = new ArrayList<>();
+  private static boolean cargados = false;
   
-  public static boolean CargarInmuebles() {
+  public static void CargarInmuebles() {
     boolean flag = true;
     ResultSet rs = null;
     Statement st = null;
@@ -43,7 +44,6 @@ public class dao_Inmuebles extends dao_Conexion{
     Double area;
     BigDecimal valor_comercial;
     int estrato;
-    
     try {
       aCasas.clear();
       aApartamentos.clear();
@@ -60,13 +60,13 @@ public class dao_Inmuebles extends dao_Conexion{
         area = rs.getDouble("area");
         valor_comercial = rs.getBigDecimal("valor_comercial");
         estrato = rs.getInt("estrato");
-        if (TipoInmuebleEnum.APTO.equals(tipo)){
+        if (tipo.equals(TipoInmuebleEnum.APTO.name())){
           aApartamentos.add(new Apartamento(codigo_nacional, id_ciudadano, direccion, tipo, area, valor_comercial, estrato));
         }
-        if (TipoInmuebleEnum.CASA.equals(tipo)){
+        if (tipo.equals(TipoInmuebleEnum.CASA.name())){
           aCasas.add(new Casa(codigo_nacional, id_ciudadano, direccion, tipo, area, valor_comercial, estrato));
         }
-        if (TipoInmuebleEnum.LOTE.equals(tipo)){
+        if (tipo.equals(TipoInmuebleEnum.LOTE.name())){
           aLotes.add(new Lote(codigo_nacional, id_ciudadano, direccion, tipo, area, valor_comercial, estrato));
         }
         flag = true;
@@ -87,8 +87,12 @@ public class dao_Inmuebles extends dao_Conexion{
         Logger.getLogger(dao_Inmuebles.class.getName()).log(Level.SEVERE, null, ex);
       }
     }  
-    return flag;
+    cargados = flag;
   }  
+  
+  public static boolean InmueblesCargados() {
+    return cargados;
+  }
   
   public static ArrayList<Casa> ListarCasasPorCodigo() {
     Collections.sort(aCasas, (Casa c1, Casa c2) -> (c1.getCodigoNacional().compareTo(c2.getCodigoNacional())));
@@ -100,7 +104,7 @@ public class dao_Inmuebles extends dao_Conexion{
     return aCasas;
   }
   
-  public static ArrayList<Apartamento> ListarApartamentoPorCodigo() {
+  public static ArrayList<Apartamento> ListarApartamentosPorCodigo() {
     Collections.sort(aApartamentos, (Apartamento a1, Apartamento a2) -> (a1.getCodigoNacional().compareTo(a2.getCodigoNacional())));
     return aApartamentos;
   }
@@ -110,12 +114,12 @@ public class dao_Inmuebles extends dao_Conexion{
     return aApartamentos;
   }
   
-  public static ArrayList<Lote> ListarLotePorCodigo() {
+  public static ArrayList<Lote> ListarLotesPorCodigo() {
     Collections.sort(aLotes, (Lote lt1, Lote lt2) -> (lt1.getCodigoNacional().compareTo(lt2.getCodigoNacional())));
     return aLotes;
   }
   
-  public static ArrayList<Lote> ListarLotePorDireccion() {
+  public static ArrayList<Lote> ListarLotesPorDireccion() {
     Collections.sort(aLotes, (Lote lt1, Lote lt2) -> (lt1.getDireccion().compareTo(lt2.getDireccion())));
     return aLotes;
   }
