@@ -106,7 +106,6 @@ public class dao_Ciudadanos extends dao_Conexion{
       st.setString(1, id);
       rs = st.executeQuery();
       if (rs.next()){
-        //System.out.println("|" + rs.getString("email").trim() + "|" + rs.getString("password").trim() + "|");
         if (id.equals(rs.getString("id").trim())){
           flag = true;
         }

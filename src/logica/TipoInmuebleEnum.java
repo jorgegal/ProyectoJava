@@ -5,10 +5,16 @@
  */
 package logica;
 
+import java.util.stream.Stream;
+
 /**
  *
  * @author Jorge Galindo
  */
 public enum TipoInmuebleEnum {
-    CASA, APTO, LOTE; 
+  CASA, APTO, LOTE; 
+  public static String[] names() {
+    return Stream.of(TipoInmuebleEnum.values()).map(TipoInmuebleEnum::name).toArray(String[]::new);
+  }
 }
+

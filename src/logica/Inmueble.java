@@ -22,13 +22,14 @@ public abstract class Inmueble {
   private final int estrato;
 
   /**
-   *
-   * @param pCcodigoNacional
-   * @param pDireccion
-   * @param pArea
-   * @param pValorComercial
-   * @param pEstrato
-   */
+  * @param pCcodigoNacional
+  * @param pId_ciudadano
+  * @param pDireccion
+  * @param pTipo
+  * @param pArea
+  * @param pValorComercial
+  * @param pEstrato
+  */
   public Inmueble(String pCcodigoNacional, String pId_ciudadano, String pDireccion, String pTipo, Double pArea, BigDecimal pValorComercial, int pEstrato) {
     this.codigoNacional = pCcodigoNacional;
     this.id_ciudadano   = pId_ciudadano;
